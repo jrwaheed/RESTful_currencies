@@ -27,8 +27,8 @@ public class CurrencyObject {
     }
 
 
-    public CurrencyObject(Long id, String ticker, float value, String relation) {
-        this.id = id;
+    public CurrencyObject(String ticker, float value, String relation) {
+
         this.ticker = ticker;
         this.value = value;
         this.relation = relation;
