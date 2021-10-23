@@ -1,10 +1,9 @@
 package currencies;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class CurrencyObject {
@@ -16,12 +15,19 @@ public class CurrencyObject {
     private float value;
     private String relation;
 
+    @ElementCollection
+    @CollectionTable(name = "currency_item_mapping",
+            joinColumns = {@JoinColumn(name = "currency_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "target_currency")
+    @Column(name = "value")
+    private Map<String,Double> currencyMap = new HashMap<>();
+
     public CurrencyObject() {
 
     }
 
 
-    public CurrencyObject(String ticker, float value, String relation) {
+    public CurrencyObject(Long id, String ticker, float value, String relation) {
         this.id = id;
         this.ticker = ticker;
         this.value = value;
@@ -60,4 +66,11 @@ public class CurrencyObject {
         this.relation = relation;
     }
 
+    public Map<String, Double> getCurrencyMap() {
+        return currencyMap;
+    }
+
+    public void setCurrencyMap(Map<String, Double> currencyMap) {
+        this.currencyMap = currencyMap;
+    }
 }

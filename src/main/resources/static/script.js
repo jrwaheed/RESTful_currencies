@@ -24,34 +24,25 @@ fetch(urlCurrencies, { method: "GET" })
 
 
 async function grabBaseCurrencies() {
-
-    const result = await updateCurrencies()
-   
+    const result = await updateCurrencies();
     postTargetsInMap(grabTargetCurrencies(), result)
-    makeTargetMap(grabTargetCurrencies(), result)
-
+    makeTargetMap(grabTargetCurrencies(), result);
     var targetMap  =  makeTargetMap(grabTargetCurrencies(), result)
-    mapToJSON(targetMap)
-
-    
+    var jsonResult = mapToJSON(targetMap)
+    console.log("wir sind hier")
+    sendDataToJava(jsonResult);
 };
 
 
 async function updateCurrencies() {
     var baseCurrencySelection = document.getElementById("userBaseInput").value;
     var urlCurrenciesBase = 'https://api.coinbase.com/v2/exchange-rates?currency=' + baseCurrencySelection;
-
     var baseCurrenciesMap = new Map();
-
     return fetch(urlCurrenciesBase, { method: "GET" })
-
         .then(response => response.json())
         .then(function (result) {
-
-
             var obj = result.data.rates;
             var keys = Object.keys(obj);
-
             for (var val in keys) {
                 baseCurrenciesMap.set(keys[val], obj[keys[val]]);
             }
@@ -74,9 +65,7 @@ function grabTargetCurrencies() {
 
 
 function postTargetsInMap(targetArray, baseCurrenciesMap) {
-    let htmlTargets = "";
-
-    
+    let htmlTargets = "";  
     targetArray.forEach(element => {
         htmlTargets += "<li>" + element + "    :    " + baseCurrenciesMap.get(element) + "</li>";
         document.getElementById("currencies").innerHTML = htmlTargets;
@@ -86,34 +75,58 @@ function postTargetsInMap(targetArray, baseCurrenciesMap) {
 
 function makeTargetMap (targetArray, baseCurrenciesMap){
     const targetMap = new Map();
-
     targetArray.forEach(element => {
         targetMap.set(element, baseCurrenciesMap.get(element))
     })
-
     return targetMap;
 };
 
 
 function mapToJSON(targetMap) {
-
     let jsonObject = {};
     targetMap.forEach((value, key) => {
-       jsonObject[key] = value });      
-
-    let JSONtargets = "[" + JSON.stringify(jsonObject) + "]";  
-    
-
-    //let JSONtohtmlTargets ="";
-    //JSONtohtmlTargets += "<p>" + JSONtargets + "</p>";
-    //document.getElementById("HtmlJSONtargets").innerHTML = JSONtohtmlTargets
-
-    console.log(JSONtargets)
-
+       jsonObject[key] = value });       
+    let JSONtargets = JSON.stringify(jsonObject);  
+        console.log(JSONtargets)
     return JSONtargets;  
 }
 
-function sendTargetsToBackend () {
- 
+function sendDataToJava(jsonResult){
+    //Sending and receiving data in JSON format using POST method
+    /*
+    var xhr = new XMLHttpRequest();
+    var url = 'http://localhost:8080/index1'
 
-} 
+    xhr.open("POST", url, true);
+    
+
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function () {
+        xhr.response = jsonResult;
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            
+            console.log("Party like a rockstar!");
+           
+        }
+        xhr.send(jsonResult);*/
+
+
+
+    
+   
+     
+    $.ajax({
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        type: 'POST',
+        url:'http://localhost:8080/index1',
+       
+        data: jsonResult,
+        success: console.log("Party like a rockstar!"),
+        error : onerror
+    });
+
+}
