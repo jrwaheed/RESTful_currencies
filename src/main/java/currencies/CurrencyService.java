@@ -14,13 +14,14 @@ public class CurrencyService {
     CurrencyObjectRepository currencyObjectRepository;
 
 
-    public void getInfo() {
-        long count = currencyObjectRepository.count();
-        System.out.println("Count" + count);
+    public void printValuesOfCurrenciesInRepository() {
+        List<CurrencyObject> listOfCurrenciesAndValues;
+        listOfCurrenciesAndValues = currencyObjectRepository.findAll();
+        for (CurrencyObject currencyObject : listOfCurrenciesAndValues) {
+            System.out.println(currencyObject.getTicker());
+        }
     }
 
-   public void showValues(){
-        List<CurrencyObject> currency = currencyObjectRepository.findAllValues();
-        System.out.println(currency);
-    }
+
+
 }

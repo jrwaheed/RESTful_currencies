@@ -27,7 +27,7 @@ public class CurrenciesResources {
 
     @GetMapping("/info")
     public void info() {
-        currencyService.getInfo();
+        currencyService.printValuesOfCurrenciesInRepository();
     }
 
     /**
